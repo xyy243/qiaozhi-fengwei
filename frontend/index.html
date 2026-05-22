@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#05070b">
+    <title>桥智缝卫 - 云端巡检系统</title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="title">桥智缝卫</div>
+        <div class="sub">桥梁伸缩缝智能巡检云端系统 · 巡检 / 识别 / 修复 / 复检 / 报告</div>
+        <div class="status-bar">
+            <div class="badge"><span class="dot"></span>云端服务在线</div>
+            <div class="badge" id="healthBadge">等待检测</div>
+            <div class="badge">设备编号：QZFW-CAR-01</div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="card">
+            <h2>实时视频窗口</h2>
+            <div class="video-wrap">
+                <img id="videoImg" alt="ESP32-CAM 视频流">
+                <div class="video-placeholder" id="videoPlaceholder">
+                    <div class="ring"></div>
+                    <div>输入 ESP32-CAM IP 后连接视频</div>
+                    <div class="hint">云端页面能打开代表服务器已通；视频需要手机/电脑与小车在同一 WiFi。</div>
+                </div>
+                <div class="scanline"></div>
+            </div>
+            <div class="input-row">
+                <input id="carIp" value="192.168.84.154" placeholder="输入 ESP32-CAM IP，例如 192.168.84.154">
+                <select id="streamMode">
+                    <option value="81">视频端口:81</option>
+                    <option value="80">同端口 /stream</option>
+                </select>
+                <button onclick="connectVideo()">连接视频</button>
+                <button class="dark" onclick="checkHealth()">检测云端</button>
+            </div>
+            <div class="flow">
+                <div class="step">1 巡检移动</div>
+                <div class="step">2 拍照采集</div>
+                <div class="step">3 云端识别</div>
+                <div class="step">4 复检报告</div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>小车控制台</h2>
+            <div class="control-grid">
+                <button class="btn-ledon" onclick="sendCar('led/on')">LED开</button>
+                <button class="btn-forward" onclick="sendCar('forward')">前进</button>
+                <button class="btn-ledoff" onclick="sendCar('led/off')">LED关</button>
+                <button class="dark btn-left" onclick="sendCar('left')">左转</button>
+                <button class="danger btn-stop" onclick="sendCar('stop')">停止</button>
+                <button class="dark btn-right" onclick="sendCar('right')">右转</button>
+                <button class="dark btn-capture" onclick="captureFromCar()">拍照采集</button>
+                <button class="dark btn-backward" onclick="sendCar('backward')">后退</button>
+                <button class="dark btn-reset" onclick="sendCar('reset')">复位</button>
+            </div>
+            <div class="report-panel">
+                <b>控制说明：</b><br>
+                控制按钮需要 ESP32-CAM 已开机，并且手机/电脑与小车处于同一个 WiFi 或热点。拍照采集会调用小车 <code>/capture_hq</code> 获取图片，再上传到云端 <code>/api/detect</code>。
+            </div>
+        </section>
+
+        <section class="card detect-card">
+            <h2>一键采集上传识别</h2>
+            <div class="upload-zone">
+                <input type="file" id="fileInput" accept="image/*">
+                <button onclick="uploadDetect()">上传云端识别</button>
+                <button class="dark" onclick="clearResult()">清空结果</button>
+            </div>
+            <div class="result-grid">
+                <div>
+                    <h2>原始巡检图</h2>
+                    <div class="img-box"><span id="rawEmpty">等待上传图片</span><img id="rawImg" alt="原始巡检图"></div>
+                </div>
+                <div>
+                    <h2>云端分析图</h2>
+                    <div class="img-box"><span id="anaEmpty">等待识别结果</span><img id="analysisImg" alt="云端分析图"></div>
+                </div>
+            </div>
+            <div class="report-panel" id="resultPanel"><b>病害分析报告：</b><br>暂无识别结果。</div>
+        </section>
+    </main>
+    <div class="toast" id="toast"></div>
+    <script src="/static/app.js"></script>
+</body>
+</html>
