@@ -8,10 +8,13 @@ __pycache__/
 
 uploads/*
 !uploads/.gitkeep
+backend/uploads/*
+!backend/uploads/.gitkeep
 
 *.db
 *.sqlite
 *.sqlite3
+backend/qzfw_cloud.db
 
 .idea/
 .vscode/
