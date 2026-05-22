@@ -1,0 +1,22 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.DS_Store
+
+uploads/*
+!uploads/.gitkeep
+
+*.db
+*.sqlite
+*.sqlite3
+
+.idea/
+.vscode/
+
+# local backups
+main_backup*.py
+main_error_backup.py
+qzfw-cloud/
