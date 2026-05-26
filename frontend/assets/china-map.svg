@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 660" role="img" aria-label="China map outline">
+  <defs>
+    <linearGradient id="land" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#0d3e70"/>
+      <stop offset=".52" stop-color="#082b55"/>
+      <stop offset="1" stop-color="#061b37"/>
+    </linearGradient>
+    <filter id="outerGlow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="#3bbcff" stroke-opacity=".13" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="960" height="660" fill="transparent"/>
+  <rect width="960" height="660" fill="url(#grid)" opacity=".7"/>
+
+  <!-- A hand-drawn but geographically recognizable China outline: Xinjiang/Tibet west, Inner Mongolia arc,
+       northeast hook, Shandong/Jiangsu coast, south China coast, Yunnan-Guangxi, Hainan/Taiwan/South China Sea. -->
+  <path filter="url(#outerGlow)" fill="url(#land)" fill-opacity=".78" stroke="#43c8ff" stroke-width="3"
+    d="M132 260
+       L91 236 L64 196 L82 156 L122 139 L161 111 L203 126 L239 96 L286 114
+       L330 84 L385 91 L430 116 L468 105 L514 132 L563 124 L609 151
+       L661 148 L705 174 L752 172 L786 201 L831 214 L853 250 L895 271
+       L870 304 L894 338 L863 365 L862 400 L829 425 L795 422 L774 458
+       L724 462 L699 501 L646 500 L615 536 L562 516 L522 545 L475 523
+       L432 543 L394 509 L344 508 L312 468 L263 466 L236 424 L188 409
+       L184 369 L139 342 L151 304 Z"/>
+
+  <path fill="#08284b" fill-opacity=".62" stroke="#43c8ff" stroke-width="2"
+    d="M720 513 L755 521 L772 553 L744 584 L704 575 L692 538 Z"/>
+  <ellipse cx="585" cy="605" rx="31" ry="18" fill="#08284b" fill-opacity=".58" stroke="#43c8ff" stroke-width="1.6"/>
+
+  <!-- Simplified province boundaries. -->
+  <g stroke="#66d7ff" stroke-opacity=".48" stroke-width="1.5" fill="none">
+    <path d="M122 139 L164 196 L151 304 L236 424"/>
+    <path d="M203 126 L229 196 L217 271 L151 304"/>
+    <path d="M286 114 L303 187 L286 260 L312 468"/>
+    <path d="M385 91 L382 174 L421 231 L394 318 L394 509"/>
+    <path d="M468 105 L459 186 L500 247 L475 338 L475 523"/>
+    <path d="M563 124 L546 205 L590 272 L562 358 L615 536"/>
+    <path d="M661 148 L639 225 L682 292 L646 382 L646 500"/>
+    <path d="M752 172 L724 247 L761 316 L724 462"/>
+    <path d="M831 214 L803 283 L826 354 L795 422"/>
+    <path d="M132 260 L286 260 L421 231 L546 205 L724 247 L895 271"/>
+    <path d="M151 304 L303 318 L500 302 L682 292 L894 338"/>
+    <path d="M184 369 L394 318 L562 358 L863 365"/>
+    <path d="M236 424 L475 338 L646 382 L829 425"/>
+    <path d="M263 466 L475 523 L646 500 L699 501"/>
+    <path d="M330 84 L382 174 L514 132 L609 151"/>
+    <path d="M514 132 L590 272 L761 316"/>
+    <path d="M430 116 L500 247 L500 302"/>
+  </g>
+
+  <!-- Coastline glow and island details. -->
+  <g stroke="#1caaff" stroke-opacity=".35" stroke-width="1" fill="none">
+    <path d="M752 172 C812 190 860 233 895 271"/>
+    <path d="M863 365 C826 394 808 424 774 458"/>
+    <path d="M724 462 C690 506 643 533 585 605"/>
+  </g>
+  <g fill="#49cfff" opacity=".52">
+    <circle cx="806" cy="489" r="3"/>
+    <circle cx="842" cy="520" r="2.5"/>
+    <circle cx="786" cy="548" r="2.4"/>
+    <circle cx="877" cy="488" r="2"/>
+    <circle cx="869" cy="566" r="2.6"/>
+    <circle cx="823" cy="588" r="1.8"/>
+  </g>
+  <g stroke="#49cfff" stroke-width="1.2" stroke-opacity=".5" fill="none">
+    <rect x="770" y="475" width="112" height="125" rx="8"/>
+    <path d="M790 501 L806 516 L821 505M832 538 L846 552 L861 539M806 572 L823 585 L841 570"/>
+  </g>
+</svg>
