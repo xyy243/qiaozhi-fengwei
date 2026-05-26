@@ -3,91 +3,264 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#05070b">
-    <title>桥智缝卫 - 云端巡检系统</title>
+    <meta name="theme-color" content="#031226">
+    <title>桥安万里 - 桥梁伸缩缝智能巡检云端平台</title>
     <link rel="manifest" href="/manifest.json">
     <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header class="header">
-        <div class="title">桥智缝卫</div>
-        <div class="sub">桥梁伸缩缝智能巡检云端系统 · 巡检 / 识别 / 修复 / 复检 / 报告</div>
-        <div class="status-bar">
-            <div class="badge"><span class="dot"></span>云端服务在线</div>
-            <div class="badge" id="healthBadge">等待检测</div>
-            <div class="badge">设备编号：QZFW-CAR-01</div>
+<div class="screen">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-mark" aria-hidden="true">
+                <svg viewBox="0 0 64 64">
+                    <path d="M32 5 56 18v28L32 59 8 46V18Z"/>
+                    <path d="M16 42h32M20 39V22m24 17V22M20 28l12-8 12 8M16 42l16-16 16 16"/>
+                </svg>
+            </div>
+            <div>
+                <strong>桥安万里</strong>
+                <span>智能巡检 · 安全无忧</span>
+            </div>
         </div>
-    </header>
 
-    <main class="container">
-        <section class="card">
-            <h2>实时视频窗口</h2>
-            <div class="video-wrap">
-                <img id="videoImg" alt="ESP32-CAM 视频流">
-                <div class="video-placeholder" id="videoPlaceholder">
-                    <div class="ring"></div>
-                    <div>输入 ESP32-CAM IP 后连接视频</div>
-                    <div class="hint">云端页面能打开代表服务器已通；视频需要手机/电脑与小车在同一 WiFi。</div>
-                </div>
-                <div class="scanline"></div>
-            </div>
-            <div class="input-row">
-                <input id="carIp" value="192.168.84.154" placeholder="输入 ESP32-CAM IP，例如 192.168.84.154">
-                <select id="streamMode">
-                    <option value="81">视频端口:81</option>
-                    <option value="80">同端口 /stream</option>
-                </select>
-                <button onclick="connectVideo()">连接视频</button>
-                <button class="dark" onclick="checkHealth()">检测云端</button>
-            </div>
-            <div class="flow">
-                <div class="step">1 巡检移动</div>
-                <div class="step">2 拍照采集</div>
-                <div class="step">3 云端识别</div>
-                <div class="step">4 复检报告</div>
+        <nav class="nav-list" aria-label="主导航">
+            <button class="nav-item active"><span>⌂</span><b>总览</b><i>›</i></button>
+            <button class="nav-item"><span>◎</span><b>实时巡检</b><i>›</i></button>
+            <button class="nav-item"><span>▣</span><b>视频监控</b><i>›</i></button>
+            <button class="nav-item"><span>▧</span><b>图片采集</b><i>›</i></button>
+            <button class="nav-item"><span>AI</span><b>AI识别分析</b><i>›</i></button>
+            <button class="nav-item"><span>☷</span><b>病害报告</b><i>›</i></button>
+            <button class="nav-item"><span>⚙</span><b>设备管理</b><i>›</i></button>
+            <button class="nav-item"><span>▥</span><b>数据中心</b><i>›</i></button>
+            <button class="nav-item"><span>✦</span><b>系统设置</b><i>›</i></button>
+        </nav>
+
+        <section class="system-card">
+            <h3>系统运行状态</h3>
+            <div class="sys-grid">
+                <span>运行时间</span><b>128天18小时</b>
+                <span>系统负载</span><b>28%</b>
+                <span>存储空间</span><b>2.4TB / 10TB</b>
+                <span>网络状态</span><b class="good">优秀</b>
             </div>
         </section>
+    </aside>
 
-        <section class="card">
-            <h2>小车控制台</h2>
-            <div class="control-grid">
-                <button class="btn-ledon" onclick="sendCar('led/on')">LED开</button>
-                <button class="btn-forward" onclick="sendCar('forward')">前进</button>
-                <button class="btn-ledoff" onclick="sendCar('led/off')">LED关</button>
-                <button class="dark btn-left" onclick="sendCar('left')">左转</button>
-                <button class="danger btn-stop" onclick="sendCar('stop')">停止</button>
-                <button class="dark btn-right" onclick="sendCar('right')">右转</button>
-                <button class="dark btn-capture" onclick="captureFromCar()">拍照采集</button>
-                <button class="dark btn-backward" onclick="sendCar('backward')">后退</button>
-                <button class="dark btn-reset" onclick="sendCar('reset')">复位</button>
+    <main class="main">
+        <header class="topbar">
+            <div class="bridge-line" aria-hidden="true"></div>
+            <div class="top-title">
+                <div class="gold-line"></div>
+                <div>
+                    <h1>桥 安 万 里</h1>
+                    <small>V2.1 云端巡检系统</small>
+                    <p>桥梁伸缩缝智能巡检云端平台</p>
+                </div>
+                <div class="gold-line"></div>
             </div>
-            <div class="report-panel">
-                <b>控制说明：</b><br>
-                控制按钮需要 ESP32-CAM 已开机，并且手机/电脑与小车处于同一个 WiFi 或热点。拍照采集会调用小车 <code>/capture_hq</code> 获取图片，再上传到云端 <code>/api/detect</code>。
+            <div class="status-tags">
+                <span class="tag online">云端服务在线</span>
+                <span class="tag">AI识别引擎：正常</span>
+                <span class="tag">设备接入：12台</span>
+                <span class="notice">3</span>
+                <span class="user-dot"></span>
+                <span class="user-name">张工⌄</span>
             </div>
-        </section>
+        </header>
 
-        <section class="card detect-card">
-            <h2>一键采集上传识别</h2>
-            <div class="upload-zone">
-                <input type="file" id="fileInput" accept="image/*">
-                <button onclick="uploadDetect()">上传云端识别</button>
-                <button class="dark" onclick="clearResult()">清空结果</button>
-            </div>
-            <div class="result-grid">
-                <div>
-                    <h2>原始巡检图</h2>
-                    <div class="img-box"><span id="rawEmpty">等待上传图片</span><img id="rawImg" alt="原始巡检图"></div>
+        <section class="dashboard">
+            <section class="panel video-panel">
+                <div class="panel-title"><span>实时视频窗口</span><em id="videoLiveBadge" class="stream-state">未连接</em></div>
+                <div class="video-stage">
+                    <img id="videoStream" alt="ESP32-CAM 实时视频流">
+                    <div class="video-empty" id="videoEmpty">
+                        <div class="camera-mark">CAM</div>
+                        <strong>等待 ESP32-CAM 实时视频流</strong>
+                        <p>输入 IP 或视频地址后连接</p>
+                    </div>
+                    <div class="video-tools">
+                        <button type="button" title="拍照" onclick="captureFromCar()">▣</button>
+                        <button type="button" title="全屏" onclick="toggleVideoFullscreen()">⛶</button>
+                    </div>
+                    <div class="video-status">
+                        <span>设备ID：ROBOT-07</span>
+                        <span>信号：强</span>
+                        <span>分辨率：1080P</span>
+                    </div>
                 </div>
-                <div>
-                    <h2>云端分析图</h2>
-                    <div class="img-box"><span id="anaEmpty">等待识别结果</span><img id="analysisImg" alt="云端分析图"></div>
+                <div class="video-connect">
+                    <input id="carIp" value="192.168.84.154" placeholder="ESP32-CAM IP 或完整视频地址">
+                    <select id="streamMode">
+                        <option value="81">:81/stream</option>
+                        <option value="video">/video</option>
+                        <option value="raw">使用输入地址</option>
+                    </select>
+                    <button type="button" onclick="connectVideo()">连接视频流</button>
                 </div>
-            </div>
-            <div class="report-panel" id="resultPanel"><b>病害分析报告：</b><br>暂无识别结果。</div>
+                <p class="video-error" id="videoError">请检查 ESP32-CAM IP、端口和 WiFi 是否一致</p>
+            </section>
+
+            <section class="panel ai-panel">
+                <div class="panel-title"><span>AI病害识别结果</span></div>
+                <div class="ai-stage" id="analysisStage">
+                    <div class="analysis-flow">原始采集图 → 云端分析图</div>
+                    <div class="analysis-engine">AI分析中枢</div>
+                    <div class="analysis-status" id="analysisStatus">等待识别</div>
+                    <img id="analysisImg" alt="AI识别结果图">
+                    <div class="mock-road" id="mockAnalysis">
+                        <div class="joint-line"></div>
+                        <div class="roi-box"></div>
+                        <div class="damage damage-a"></div>
+                        <div class="damage damage-b"></div>
+                        <div class="damage damage-c"></div>
+                        <span class="mark-label label-roi">ROI分析区域</span>
+                        <span class="mark-label label-damage">疑似破损区域</span>
+                        <span class="mark-label label-seg">病害分割区域</span>
+                    </div>
+                    <div class="analysis-scan"></div>
+                    <span class="roi-label">黄色 ROI 分析区域</span>
+                    <div class="analysis-data">
+                        <span>疑似区域：<b id="aiSuspectCount">4处</b></span>
+                        <span>面积占比：<b class="gold-text" id="aiAreaRatio">18.7%</b></span>
+                        <span>置信度：<b class="cyan-text" id="aiConfidence">0.94</b></span>
+                        <span>风险等级：<b class="red-text" id="aiRiskLevel">高风险</b></span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel detail-panel">
+                <div class="detail-groups">
+                    <div class="detail-left">
+                        <div class="detail-row"><span>病害类型</span><strong id="detailType">锚固区混凝土破损 / 剥落露筋</strong></div>
+                        <div class="detail-row"><span>风险等级</span><b class="risk-tag high" id="detailRisk">高风险</b></div>
+                    </div>
+                    <div class="detail-right">
+                        <div class="detail-row"><span>识别置信度</span><b id="detailConfidence">0.94</b></div>
+                        <div class="detail-row"><span>面积占比</span><b id="detailArea">18.7%</b></div>
+                        <time id="detailTime">识别时间：2025-05-30 10:24:36</time>
+                    </div>
+                </div>
+                <div class="detail-row advice"><span>建议处置</span><p id="detailAdvice">建议立即修复，防止钢筋锈蚀及结构耐久性进一步下降</p></div>
+            </section>
+
+            <section class="stat-card blue"><i>▤</i><span>今日巡检次数</span><strong>36</strong><em>次</em><p>较昨日 ↑ 12%</p></section>
+            <section class="stat-card green"><i>AI</i><span>已识别病害</span><strong>78</strong><em>处</em><p>较昨日 ↑ 8%</p></section>
+            <section class="stat-card red"><i>!</i><span>高风险告警</span><strong>12</strong><em>条</em><p>较昨日 ↑ 33%</p></section>
+            <section class="stat-card gold"><i>☷</i><span>待复核报告</span><strong>5</strong><em>份</em><p>较昨日 ↓ 16%</p></section>
+
+            <section class="panel upload-panel">
+                <div class="panel-title"><span>一键上传识别</span></div>
+                <div class="upload-body">
+                    <label class="drop-zone" id="dropZone">
+                        <input type="file" id="fileInput" accept="image/*">
+                        <span class="cloud">☁</span>
+                        <b>点击或拖拽图片到此处</b>
+                        <em>支持JPG/PNG，单张≤20MB</em>
+                    </label>
+                    <div class="file-card">
+                        <img id="thumbImg" alt="文件缩略图">
+                        <div>
+                            <strong id="fileName">IMG_20250530_102436.jpg</strong>
+                            <span id="fileSize">2.48MB</span>
+                        </div>
+                        <i id="fileOk">✓</i>
+                    </div>
+                </div>
+                <div class="upload-actions">
+                    <button type="button" onclick="selectUpload()">上传图片</button>
+                    <button type="button" onclick="uploadDetect()">AI开始识别</button>
+                    <button type="button" class="gold-btn" onclick="openReport()">生成报告</button>
+                </div>
+                <p class="hint-line">提示：支持批量上传，一次最多20张图片</p>
+            </section>
+
+            <section class="panel trend-panel">
+                <div class="panel-title"><span>病害趋势分析</span></div>
+                <div class="charts">
+                    <div>
+                        <h4>近7日巡检次数趋势</h4>
+                        <svg id="lineChart" viewBox="0 0 360 155" role="img" aria-label="近7日巡检次数趋势"></svg>
+                    </div>
+                    <div>
+                        <h4>病害类型分布</h4>
+                        <div id="barChart" class="bar-chart"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel map-panel">
+                <div class="panel-title"><span>病害资产分布 / 地图概览</span></div>
+                <div class="map-wrap">
+                    <img src="/static/assets/china-map.svg" alt="中国地图轮廓" onerror="this.src='assets/china-map.svg'">
+                    <div class="map-total">桥梁总数<br><b>186</b><small>座</small></div>
+                    <button class="map-point green" style="left:69%;top:30%" data-city="北京" data-count="18" data-risk="正常运行" data-online="17"></button>
+                    <button class="map-point gold" style="left:66%;top:43%" data-city="济南" data-count="16" data-risk="中风险" data-online="15"></button>
+                    <button class="map-point gold" style="left:72%;top:58%" data-city="南京" data-count="22" data-risk="中风险" data-online="21"></button>
+                    <button class="map-point red" style="left:79%;top:60%" data-city="上海" data-count="28" data-risk="高风险" data-online="26"></button>
+                    <button class="map-point gold" style="left:56%;top:61%" data-city="武汉" data-count="20" data-risk="中风险" data-online="19"></button>
+                    <button class="map-point green" style="left:55%;top:72%" data-city="长沙" data-count="14" data-risk="正常运行" data-online="14"></button>
+                    <button class="map-point green" style="left:63%;top:84%" data-city="广州" data-count="24" data-risk="正常运行" data-online="23"></button>
+                    <button class="map-point green" style="left:38%;top:63%" data-city="成都" data-count="16" data-risk="正常运行" data-online="15"></button>
+                    <button class="map-point offline" style="left:49%;top:50%" data-city="西安" data-count="12" data-risk="离线设备" data-online="10"></button>
+                    <div class="map-tooltip" id="mapTooltip"></div>
+                </div>
+                <div class="map-legend">
+                    <span><i class="green-dot"></i>正常运行 132</span>
+                    <span><i class="gold-dot"></i>中风险 34</span>
+                    <span><i class="red-dot"></i>高风险 18</span>
+                    <span><i class="off-dot"></i>离线设备 2</span>
+                </div>
+            </section>
+
+            <section class="panel report-panel">
+                <div class="panel-title"><span>病害分析报告</span><a href="/admin">更多 &gt;</a></div>
+                <div class="report-grid">
+                    <div class="donut" style="--p:23"><span>23%</span><em>高风险占比</em></div>
+                    <div class="risk-list">
+                        <span><i class="red-dot"></i>高风险 <b>18处</b></span>
+                        <span><i class="gold-dot"></i>中风险 <b>34处</b></span>
+                        <span><i class="blue-dot"></i>低风险 <b>26处</b></span>
+                        <span><i class="green-dot"></i>正常 <b>120处</b></span>
+                    </div>
+                </div>
+                <ul class="report-list">
+                    <li><i></i><b>G15沈海高速桥</b><span>伸缩缝锚固区混凝土破损严重</span><time>2025-05-30</time><em>待复核</em></li>
+                    <li><i></i><b>S33杭新景高速桥</b><span>伸缩缝止水带老化开裂</span><time>2025-05-30</time><em class="done">已派单</em></li>
+                    <li><i></i><b>G60沪昆高速桥</b><span>伸缩缝异物堆积需清理</span><time>2025-05-29</time><em class="archived">已归档</em></li>
+                    <li><i></i><b>G25长深高速桥</b><span>伸缩缝钢筋锈蚀</span><time>2025-05-29</time><em>待复核</em></li>
+                </ul>
+            </section>
+
+            <section class="panel control-panel">
+                <div class="panel-title"><span>巡检控制台</span><em class="device-online">设备在线</em></div>
+                <div class="control-layout">
+                    <div class="drive-pad">
+                        <button onclick="sendCar('forward')" class="forward">前进</button>
+                        <button onclick="sendCar('left')" class="left">左转</button>
+                        <button onclick="sendCar('stop')" class="stop">停止</button>
+                        <button onclick="sendCar('right')" class="right">右转</button>
+                        <button onclick="sendCar('backward')" class="backward">后退</button>
+                    </div>
+                    <div class="control-actions">
+                        <button onclick="captureFromCar()">拍照</button>
+                        <button onclick="sendCar('led/on')">LED开</button>
+                        <button onclick="sendCar('led/off')">LED关</button>
+                    </div>
+                </div>
+                <div class="robot-status">
+                    <span>速度档位 <b>中速</b></span>
+                    <span>电量 <b>76%</b></span>
+                    <span>信号强度 <b>强</b></span>
+                    <span>设备在线</span>
+                </div>
+            </section>
         </section>
     </main>
-    <div class="toast" id="toast"></div>
-    <script src="/static/app.js"></script>
+</div>
+<div class="toast" id="toast"></div>
+<script src="/static/app.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
