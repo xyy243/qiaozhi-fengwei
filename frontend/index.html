@@ -105,11 +105,11 @@
             <section class="panel ai-panel">
                 <div class="panel-title"><span>AI病害识别结果</span></div>
                 <div class="ai-stage" id="analysisStage">
-                    <div class="analysis-flow">原始采集图 → 云端分析图</div>
+                    <div class="analysis-flow">等待上传桥梁伸缩缝图片</div>
                     <div class="analysis-engine">AI分析中枢</div>
-                    <div class="analysis-status" id="analysisStatus">等待识别</div>
+                    <div class="analysis-status" id="analysisStatus">请先在左下方“一键上传识别”区域上传图片，云端将自动生成病害分析图。</div>
                     <img id="analysisImg" alt="AI识别结果图">
-                    <div class="mock-road" id="mockAnalysis">
+                    <div class="mock-road empty-state" id="mockAnalysis">
                         <div class="joint-line"></div>
                         <div class="roi-box"></div>
                         <div class="damage damage-a"></div>
@@ -120,12 +120,12 @@
                         <span class="mark-label label-seg">病害分割区域</span>
                     </div>
                     <div class="analysis-scan"></div>
-                    <span class="roi-label">黄色 ROI 分析区域</span>
-                    <div class="analysis-data">
-                        <span>疑似区域：<b id="aiSuspectCount">4处</b></span>
-                        <span>面积占比：<b class="gold-text" id="aiAreaRatio">18.7%</b></span>
-                        <span>置信度：<b class="cyan-text" id="aiConfidence">0.94</b></span>
-                        <span>风险等级：<b class="red-text" id="aiRiskLevel">高风险</b></span>
+                    <span class="roi-label">等待云端分析</span>
+                    <div class="analysis-data pending">
+                        <span>疑似区域：<b id="aiSuspectCount">--</b></span>
+                        <span>面积占比：<b class="gold-text" id="aiAreaRatio">--</b></span>
+                        <span>置信度：<b class="cyan-text" id="aiConfidence">--</b></span>
+                        <span>风险等级：<b class="red-text" id="aiRiskLevel">未评估</b></span>
                     </div>
                 </div>
             </section>
@@ -133,16 +133,16 @@
             <section class="panel detail-panel">
                 <div class="detail-groups">
                     <div class="detail-left">
-                        <div class="detail-row"><span>病害类型</span><strong id="detailType">锚固区混凝土破损 / 剥落露筋</strong></div>
-                        <div class="detail-row"><span>风险等级</span><b class="risk-tag high" id="detailRisk">高风险</b></div>
+                        <div class="detail-row"><span>病害类型</span><strong id="detailType">等待识别</strong></div>
+                        <div class="detail-row"><span>风险等级</span><b class="risk-tag pending" id="detailRisk">未评估</b></div>
                     </div>
                     <div class="detail-right">
-                        <div class="detail-row"><span>识别置信度</span><b id="detailConfidence">0.94</b></div>
-                        <div class="detail-row"><span>面积占比</span><b id="detailArea">18.7%</b></div>
-                        <time id="detailTime">识别时间：2025-05-30 10:24:36</time>
+                        <div class="detail-row"><span>识别置信度</span><b id="detailConfidence">--</b></div>
+                        <div class="detail-row"><span>面积占比</span><b id="detailArea">--</b></div>
+                        <time id="detailTime">识别时间：--</time>
                     </div>
                 </div>
-                <div class="detail-row advice"><span>建议处置</span><p id="detailAdvice">建议立即修复，防止钢筋锈蚀及结构耐久性进一步下降</p></div>
+                <div class="detail-row advice"><span>建议处置</span><p id="detailAdvice">请上传图片并完成 AI 识别后查看处置建议</p></div>
             </section>
 
             <section class="stat-card blue"><i>▤</i><span>今日巡检次数</span><strong>36</strong><em>次</em><p>较昨日 ↑ 12%</p></section>

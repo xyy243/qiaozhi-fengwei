@@ -142,3 +142,10 @@ body::before{
 .file-card img.loaded{opacity:1}
 .file-card img.broken{opacity:0}
 .file-card.has-image::before{display:none}
+.risk-tag.pending{color:#8fb4cd;background:rgba(120,150,180,.12);box-shadow:none}
+.mock-road.empty-state{background:radial-gradient(circle at 50% 42%,rgba(74,202,255,.14),transparent 28%),linear-gradient(rgba(90,180,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(90,180,255,.055) 1px,transparent 1px)!important;background-size:100% 100%,28px 28px,28px 28px!important}
+.mock-road.empty-state::before{content:"等待上传桥梁伸缩缝图片";position:absolute;left:50%;top:45%;transform:translate(-50%,-50%);z-index:4;color:#c9eaff;font-size:18px;font-weight:800;white-space:nowrap;text-shadow:0 0 14px rgba(80,200,255,.38)}
+.mock-road.empty-state::after{background:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px)!important;background-size:28px 28px!important}
+.mock-road.empty-state .joint-line,.mock-road.empty-state .roi-box,.mock-road.empty-state .damage,.mock-road.empty-state .mark-label,.mock-road.inactive-overlay .joint-line,.mock-road.inactive-overlay .roi-box,.mock-road.inactive-overlay .damage,.mock-road.inactive-overlay .mark-label{display:none}
+.mock-road.result-visible .joint-line,.mock-road.result-visible .roi-box,.mock-road.result-visible .damage,.mock-road.result-visible .mark-label{display:block}
+.analysis-data.pending{display:none}

@@ -16,6 +16,16 @@
         suggestion: "建议立即修复，防止钢筋锈蚀及结构耐久性进一步下降",
         created_at: "2025-05-30 10:24:36",
     };
+    const waitingDetail = {
+        disease_type: "等待识别",
+        risk_level: "未评估",
+        confidence: "--",
+        area_ratio: "--",
+        suspect_count: "--",
+        suggestion: "请上传图片并完成 AI 识别后查看处置建议",
+        created_at: "--",
+    };
+    let detectionCompleted = false;
 
     function toast(message) {
         const t = $("toast");
@@ -204,46 +214,90 @@
 
         if ($("fileName")) $("fileName").textContent = file.name;
         if ($("fileSize")) $("fileSize").textContent = `${(file.size / 1024 / 1024).toFixed(2)}MB`;
+        detectionCompleted = false;
+        lastReportUrl = "";
         renderUploadedBaseImage(selectedImageDataUrl, true);
+        updateDetail({
+            ...waitingDetail,
+            suggestion: "图片已加载，请点击“AI开始识别”",
+        }, { raw: true });
         setAnalysisStatus("图片已加载，等待云端识别", "ready");
         toast("图片已加载，等待云端识别");
     }
 
     function riskClass(risk) {
+        if ((risk || "").includes("未评估")) return "pending";
         if ((risk || "").includes("高")) return "high";
         if ((risk || "").includes("中")) return "mid";
         return "low";
     }
 
     function formatArea(value) {
+        if (value === "--" || value === "" || value === null || value === undefined) return "--";
         const raw = String(value ?? fallbackDetection.area_ratio);
         return raw.includes("%") ? raw : `${raw}%`;
     }
 
-    function updateDetail(data) {
-        const merged = normalizeDetection(data);
-        const risk = merged.risk_level || fallbackDetection.risk_level;
+    function updateDetail(data, options = {}) {
+        const merged = options.raw ? data : normalizeDetection(data);
+        const risk = merged.risk_level || "未评估";
 
         if ($("detailType")) $("detailType").textContent = merged.disease_type;
         if ($("detailRisk")) {
             $("detailRisk").textContent = risk;
             $("detailRisk").className = `risk-tag ${riskClass(risk)}`;
         }
-        if ($("detailConfidence")) $("detailConfidence").textContent = Number(merged.confidence || fallbackDetection.confidence).toFixed(2);
+        if ($("detailConfidence")) {
+            $("detailConfidence").textContent = merged.confidence === "--" ? "--" : Number(merged.confidence || fallbackDetection.confidence).toFixed(2);
+        }
         if ($("detailArea")) $("detailArea").textContent = formatArea(merged.area_ratio);
         if ($("detailAdvice")) $("detailAdvice").textContent = merged.suggestion;
-        if ($("detailTime")) $("detailTime").textContent = `识别时间：${merged.created_at || nowText()}`;
+        if ($("detailTime")) $("detailTime").textContent = `识别时间：${merged.created_at || "--"}`;
 
-        if ($("aiSuspectCount")) $("aiSuspectCount").textContent = `${merged.suspect_count}处`;
+        if ($("aiSuspectCount")) $("aiSuspectCount").textContent = merged.suspect_count === "--" ? "--" : `${merged.suspect_count}处`;
         if ($("aiAreaRatio")) $("aiAreaRatio").textContent = formatArea(merged.area_ratio);
-        if ($("aiConfidence")) $("aiConfidence").textContent = Number(merged.confidence || fallbackDetection.confidence).toFixed(2);
+        if ($("aiConfidence")) $("aiConfidence").textContent = merged.confidence === "--" ? "--" : Number(merged.confidence || fallbackDetection.confidence).toFixed(2);
         if ($("aiRiskLevel")) $("aiRiskLevel").textContent = risk;
 
-        lastReportUrl = merged.report_url || lastReportUrl;
+        if (!options.raw) lastReportUrl = merged.report_url || lastReportUrl;
         return merged;
     }
 
-    function renderUploadedBaseImage(imageUrl, showOverlay) {
+    function setAnalysisVisualState(state) {
+        const mock = $("mockAnalysis");
+        const data = document.querySelector(".analysis-data");
+        const roiLabel = document.querySelector(".roi-label");
+        if (mock) {
+            mock.classList.toggle("empty-state", state === "idle");
+            mock.classList.toggle("inactive-overlay", state === "uploaded" || state === "running" || state === "failed");
+            mock.classList.toggle("result-visible", state === "result");
+        }
+        if (data) data.classList.toggle("pending", state !== "result");
+        if (roiLabel) roiLabel.textContent = state === "result" ? "黄色 ROI 分析区域" : "等待云端分析";
+    }
+
+    function resetToInitialState() {
+        detectionCompleted = false;
+        lastReportUrl = "";
+        const img = $("analysisImg");
+        if (img) {
+            img.removeAttribute("src");
+            img.style.display = "none";
+            img.classList.remove("has-user-image");
+        }
+        const mock = $("mockAnalysis");
+        if (mock) {
+            mock.style.display = "block";
+            mock.classList.remove("overlay-mode", "inactive-overlay", "result-visible");
+        }
+        const flow = document.querySelector(".analysis-flow");
+        if (flow) flow.textContent = "等待上传桥梁伸缩缝图片";
+        setAnalysisStatus("请先在左下方“一键上传识别”区域上传图片，云端将自动生成病害分析图。");
+        setAnalysisVisualState("idle");
+        updateDetail(waitingDetail, { raw: true });
+    }
+
+    function renderUploadedBaseImage(imageUrl, showOverlay, state = "uploaded") {
         const img = $("analysisImg");
         const mock = $("mockAnalysis");
         const flow = document.querySelector(".analysis-flow");
@@ -258,6 +312,7 @@
             mock.classList.toggle("overlay-mode", Boolean(imageUrl));
         }
         if (flow) flow.textContent = "原始采集图 → 云端分析图";
+        setAnalysisVisualState(state);
     }
 
     function renderDetection(data, fallbackUrl) {
@@ -273,9 +328,11 @@
             img.style.filter = "brightness(1.16) contrast(1.12) saturate(1.08)";
             if (mock) mock.style.display = "none";
             if (flow) flow.textContent = "原始采集图 → 云端分析图";
+            setAnalysisVisualState("result");
         } else {
-            renderUploadedBaseImage(fallbackUrl || selectedImageDataUrl, true);
+            renderUploadedBaseImage(fallbackUrl || selectedImageDataUrl, true, "result");
         }
+        detectionCompleted = true;
         setAnalysisStatus("识别完成，已生成云端分析图", "done");
     }
 
@@ -283,6 +340,7 @@
         const fd = new FormData();
         fd.append("file", blob, filename || "bridge-upload.jpg");
         setAnalysisStatus("云端识别中...", "running");
+        setAnalysisVisualState("running");
         toast("云端识别中...");
         const res = await fetch("/api/detect", { method: "POST", body: fd });
         const data = await res.json();
@@ -305,14 +363,24 @@
             await detectBlob(selectedFile, selectedFile.name);
         } catch (err) {
             setAnalysisStatus("识别失败，请检查服务器连接", "error");
-            renderDetection(fallbackDetection, selectedImageDataUrl);
+            setAnalysisVisualState("failed");
+            detectionCompleted = false;
+            updateDetail({
+                disease_type: "识别失败",
+                risk_level: "未评估",
+                confidence: "--",
+                area_ratio: "--",
+                suspect_count: "--",
+                suggestion: "请重新上传图片或检查云端服务",
+                created_at: "--",
+            }, { raw: true });
             toast("识别失败，请检查服务器连接");
         }
     };
 
     window.openReport = function openReport() {
-        if (lastReportUrl) window.open(lastReportUrl, "_blank");
-        else toast("请先完成一次 AI识别以生成报告");
+        if (detectionCompleted && lastReportUrl) window.open(lastReportUrl, "_blank");
+        else toast("请先完成 AI 病害识别后再生成报告");
     };
 
     function setupUpload() {
@@ -410,8 +478,7 @@
         drawLineChart();
         drawBars();
         setupMapTooltips();
-        updateDetail(fallbackDetection);
-        setAnalysisStatus("等待识别");
+        resetToInitialState();
     }
 
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
